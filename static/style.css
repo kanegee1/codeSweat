@@ -63,7 +63,9 @@ nav a { color: var(--muted); margin-left: 18px; font-size: 15px; }
 .card { background: var(--card); border-radius: 10px; box-shadow: var(--shadow); padding: 18px 18px 14px; }
 .card.has-cover { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: start; }
 .card-cover { display: block; width: 96px; margin-top: 46px; }
-.card-cover img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
+.card-cover img, .cover-empty { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
+.cover-empty { display: grid; place-items: center; padding: 6px; background: var(--accent-soft); color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+.card-cover:hover .cover-empty { color: var(--accent); }
 .card h2 { margin: 10px 0 6px; font-size: 21px; line-height: 1.3; letter-spacing: -.01em; }
 .card h2 a { color: var(--text); }
 .card h2 a:hover { color: var(--accent); text-decoration: none; }
@@ -116,7 +118,8 @@ nav a { color: var(--muted); margin-left: 18px; font-size: 15px; }
   .card { padding: 22px 26px 16px; }
   .card.has-cover { gap: 22px; }
   .card-cover { width: 180px; }
-  .card-cover img { aspect-ratio: 4 / 3; }
+  .card-cover img, .cover-empty { aspect-ratio: 4 / 3; }
+  .cover-empty { font-size: 15px; }
   .card h2 { font-size: 24px; }
   .post-inner { padding: 32px 48px 40px; }
   .post h1 { font-size: 40px; }

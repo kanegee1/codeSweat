@@ -334,7 +334,7 @@ $("saveBtn").onclick = async () => {
   const path = editing ? editing.path : `posts/${$("fDate").value}-${slugify(title) || "post"}.md`;
   const btn = $("saveBtn");
   btn.disabled = true;
-  const label = btn.textContent;
+  let label = btn.textContent;
   btn.textContent = "Publishing…";
   try {
     if (!editing) {

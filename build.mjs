@@ -101,7 +101,7 @@ function card(p, up) {
   <div class="tags">${tagChips(p.tags, up)}</div>
   <div class="read">${p.minutes} min read</div>
   </div>
-  ${p.cover ? `<a class="card-cover" href="${href}" tabindex="-1" aria-hidden="true"><img src="${esc(coverSrc(p, up))}" alt="" loading="lazy"></a>` : ""}
+  ${p.cover ? `<div class="card-cover"><a href="${href}" tabindex="-1" aria-hidden="true"><img src="${esc(coverSrc(p, up))}" alt="" loading="lazy"></a></div>` : ""}
 </article>`;
 }
 

@@ -63,7 +63,9 @@ nav a { color: var(--muted); margin-left: 18px; font-size: 15px; }
 .card { background: var(--card); border-radius: 10px; box-shadow: var(--shadow); padding: 18px 18px 14px; }
 .card.has-cover { display: flex; gap: 16px; align-items: center; }
 .card-body { flex: 0 1 auto; min-width: 0; }
-.card-cover { flex: none; width: 112px; }
+/* The image is centered in the space beside the text, so the gaps on each side stay equal */
+.card-cover { flex: 1 0 auto; display: flex; justify-content: center; }
+.card-cover a { display: block; width: 112px; }
 .card-cover img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; }
 .card h2 { margin: 10px 0 6px; font-size: 21px; line-height: 1.3; letter-spacing: -.01em; }
 .card h2 a { color: var(--text); }
@@ -117,7 +119,7 @@ nav a { color: var(--muted); margin-left: 18px; font-size: 15px; }
   .hero h1 { font-size: 36px; }
   .card { padding: 22px 26px 16px; }
   .card.has-cover { gap: 24px; }
-  .card-cover { width: 200px; }
+  .card-cover a { width: 200px; }
   .card-cover img { aspect-ratio: 4 / 3; }
   .card h2 { font-size: 24px; }
   .post-inner { padding: 32px 48px 40px; }

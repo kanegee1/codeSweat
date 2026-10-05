@@ -2,6 +2,7 @@
 title: How to play runescape v2
 date: 2026-10-05
 tags: [osrs]
+description: rune
 ---
 
 Death grows tired of being overlooked. Hordes of adventurers respawning and shrugging off their end over and over again... but for those of you with nerves of steel, strong stomachs, and perhaps a masochistic streak: Death offers a challenge!

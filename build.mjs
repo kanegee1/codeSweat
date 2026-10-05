@@ -93,16 +93,15 @@ const coverSrc = (p, up) => /^https?:\/\//.test(p.cover) ? p.cover : up + p.cove
 
 function card(p, up) {
   const href = `${up}posts/${p.slug}.html`;
-  return `<article class="card has-cover">
+  return `<article class="card${p.cover ? " has-cover" : ""}">
   <div class="card-body">
   <div class="byline"><span class="avatar">${esc(initials)}</span><div><div class="author">${esc(cfg.author)}</div><time datetime="${p.date}">${fmtDate(p.date)}</time></div></div>
   <h2><a href="${href}">${esc(p.title)}</a></h2>
   <p class="excerpt">${esc(p.excerpt)}</p>
-  <div class="meta"><div class="tags">${tagChips(p.tags, up)}</div><span class="read">${p.minutes} min read</span></div>
+  <div class="tags">${tagChips(p.tags, up)}</div>
+  <div class="read">${p.minutes} min read</div>
   </div>
-  <a class="card-cover" href="${href}" tabindex="-1" aria-hidden="true">${p.cover
-    ? `<img src="${esc(coverSrc(p, up))}" alt="" loading="lazy">`
-    : `<span class="cover-empty">${esc(p.tags[0] ? "#" + p.tags[0] : cfg.title)}</span>`}</a>
+  ${p.cover ? `<a class="card-cover" href="${href}" tabindex="-1" aria-hidden="true"><img src="${esc(coverSrc(p, up))}" alt="" loading="lazy"></a>` : ""}
 </article>`;
 }
 

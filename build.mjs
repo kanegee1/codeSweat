@@ -50,6 +50,7 @@ const posts = fs.readdirSync(path.join(ROOT, "posts"))
 const tagMap = {};
 for (const p of posts) for (const t of p.tags) (tagMap[t] ||= []).push(p);
 
+const BUILD = Date.now().toString(36); // changes every deploy so browsers fetch fresh CSS
 const initials = cfg.author.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
 
 function layout({ title, description, body, depth = 0 }) {
@@ -68,7 +69,7 @@ function layout({ title, description, body, depth = 0 }) {
 <meta property="og:description" content="${esc(description || cfg.description)}">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%233b49df'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='700'>${esc(initials)}</text></svg>">
 <link rel="alternate" type="application/rss+xml" title="${esc(cfg.title)}" href="${up}feed.xml">
-<link rel="stylesheet" href="${up}style.css">
+<link rel="stylesheet" href="${up}style.css?v=${BUILD}">
 </head>
 <body>
 <header class="topbar">
@@ -92,14 +93,16 @@ const coverSrc = (p, up) => /^https?:\/\//.test(p.cover) ? p.cover : up + p.cove
 
 function card(p, up) {
   const href = `${up}posts/${p.slug}.html`;
-  return `<article class="card${p.cover ? " has-cover" : ""}">
+  return `<article class="card has-cover">
   <div class="card-body">
   <div class="byline"><span class="avatar">${esc(initials)}</span><div><div class="author">${esc(cfg.author)}</div><time datetime="${p.date}">${fmtDate(p.date)}</time></div></div>
   <h2><a href="${href}">${esc(p.title)}</a></h2>
   <p class="excerpt">${esc(p.excerpt)}</p>
   <div class="meta"><div class="tags">${tagChips(p.tags, up)}</div><span class="read">${p.minutes} min read</span></div>
   </div>
-  ${p.cover ? `<a class="card-cover" href="${href}" tabindex="-1" aria-hidden="true"><img src="${esc(coverSrc(p, up))}" alt="" loading="lazy"></a>` : ""}
+  <a class="card-cover" href="${href}" tabindex="-1" aria-hidden="true">${p.cover
+    ? `<img src="${esc(coverSrc(p, up))}" alt="" loading="lazy">`
+    : `<span class="cover-empty">${esc(p.tags[0] ? "#" + p.tags[0] : cfg.title)}</span>`}</a>
 </article>`;
 }
 

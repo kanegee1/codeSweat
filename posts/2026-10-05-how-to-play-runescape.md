@@ -3,7 +3,6 @@ title: How to play runescape
 date: 2026-10-05
 tags: [runescape]
 description: Have you ever played runescape?
-cover: https://secure.runescape.com/m=news/ge-improvements-beyond-max-cash?oldschool=1&_gl=1*1ij0k6b*_ga*NjUxNzY1OTI5LjE3NzU5MjIyNjA.*_ga_DSN9YBF934*czE3OTEyMjI0MTEkbzckZzAkdDE3OTEyMjI0MTQkajU3JGwwJGgxMDAzMDIxMDI4
 ---
 
 Runescape is the best game ever. Death grows tired of being overlooked. Hordes of adventurers respawning and shrugging off their end over and over again... but for those of you with nerves of steel, strong stomachs, and perhaps a masochistic streak: Death offers a challenge!

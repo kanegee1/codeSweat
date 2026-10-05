@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Write · Code Sweat</title>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<style>
+:root {
+  --bg: #f5f5f4; --card: #fff; --text: #171717; --muted: #5b5b5b; --line: #e5e5e5;
+  --accent: #3b49df; --soft: #eef0ff; --ok: #1a7f37; --bad: #cf222e; --code-bg: #f3f3f3;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0f1115; --card: #171a21; --text: #ececec; --muted: #a3a3a3; --line: #2a2e37;
+          --accent: #8b95ff; --soft: #232848; --ok: #4ac26b; --bad: #ff7b72; --code-bg: #0b0d11; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+a { color: var(--accent); }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 48px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: calc(14px + env(safe-area-inset-top)) 0 14px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+.top b { font-size: 18px; }
+.top .who { color: var(--muted); font-size: 14px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
+h1 { font-size: 24px; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 10px; }
+p.hint { color: var(--muted); font-size: 14px; margin: 4px 0 0; }
+label { display: block; font-size: 14px; font-weight: 600; margin: 12px 0 4px; }
+input[type=text], input[type=password], input[type=url], input[type=date], textarea {
+  width: 100%; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; }
+textarea { min-height: 360px; font: 15px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }
+input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.grid { display: grid; gap: 0 14px; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .grid { grid-template-columns: 2fr 1fr; } }
+.check { display: flex; align-items: center; gap: 8px; font-weight: 400; margin-top: 14px; }
+button { font: inherit; font-size: 15px; padding: 9px 16px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--card); color: var(--text); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+button.danger { color: var(--bad); }
+button:disabled { opacity: .5; cursor: default; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.spread { justify-content: space-between; }
+.tabs { display: flex; gap: 4px; margin: 14px 0 6px; }
+.tabs button { padding: 6px 12px; font-size: 14px; }
+.tabs button[aria-selected=true] { background: var(--soft); border-color: var(--accent); }
+.preview { min-height: 360px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 16px;
+  font-size: 17px; line-height: 1.7; overflow-wrap: break-word; }
+.preview img { max-width: 100%; border-radius: 8px; }
+.preview pre { background: #0b0d11; color: #e6e6e6; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 14px; }
+.preview code { background: var(--code-bg); padding: .1em .3em; border-radius: 4px; font-size: .9em; }
+.preview pre code { background: none; padding: 0; }
+.preview table { border-collapse: collapse; } .preview th, .preview td { border: 1px solid var(--line); padding: 5px 9px; }
+.preview blockquote { margin: 1em 0; padding: 2px 14px; border-left: 4px solid var(--accent); color: var(--muted); }
+.list { list-style: none; padding: 0; margin: 0; }
+.list li { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  padding: 10px 0; border-top: 1px solid var(--line); }
+.list li:first-child { border-top: 0; }
+.list .t { font-weight: 600; }
+.list .d { color: var(--muted); font-size: 13px; }
+.badge { font-size: 12px; padding: 1px 7px; border-radius: 10px; background: var(--soft); color: var(--muted); margin-left: 6px; font-weight: 400; }
+.msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 15px; }
+.msg.ok { background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.msg.bad { background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <b>Code Sweat · Write</b>
+    <div class="row"><span class="who" id="who"></span><button id="signout" class="hidden">Sign out</button></div>
+  </div>
+
+  <div id="msg" class="msg hidden" role="status"></div>
+
+  <!-- Sign in -->
+  <section id="signin" class="panel hidden">
+    <h1>Admin sign-in</h1>
+    <p class="hint">Paste your GitHub access token for the codeSweat repo. It stays in this browser only and is sent only to GitHub.</p>
+    <label for="token">Access token</label>
+    <input id="token" type="password" autocomplete="off" placeholder="github_pat_...">
+    <div class="row" style="margin-top:14px"><button class="primary" id="signinBtn">Sign in</button></div>
+  </section>
+
+  <!-- Post list -->
+  <section id="listView" class="panel hidden">
+    <div class="row spread"><h2 style="margin:0">Your posts</h2><button class="primary" id="newBtn">New post</button></div>
+    <ul class="list" id="postList" style="margin-top:10px"></ul>
+  </section>
+
+  <!-- Editor -->
+  <section id="editor" class="panel hidden">
+    <div class="row spread"><h2 id="editorTitle" style="margin:0">New post</h2><button id="backBtn">Back to posts</button></div>
+    <div class="grid">
+      <div><label for="fTitle">Title</label><input id="fTitle" type="text"></div>
+      <div><label for="fDate">Date</label><input id="fDate" type="date"></div>
+    </div>
+    <label for="fDesc">Summary <span style="font-weight:400;color:var(--muted)">(shows under the title on the home page)</span></label>
+    <input id="fDesc" type="text">
+    <div class="grid">
+      <div><label for="fTags">Tags <span style="font-weight:400;color:var(--muted)">(separate with commas)</span></label><input id="fTags" type="text" placeholder="3dprinting, mtg"></div>
+      <div><label for="fCover">Cover image link</label><input id="fCover" type="url" placeholder="optional"></div>
+    </div>
+    <label class="check"><input id="fDraft" type="checkbox"> Save as draft (hidden from the site)</label>
+
+    <div class="tabs" role="tablist">
+      <button id="tabWrite" role="tab" aria-selected="true">Write</button>
+      <button id="tabPreview" role="tab" aria-selected="false">Preview</button>
+    </div>
+    <textarea id="fBody" placeholder="Write your post in Markdown..."></textarea>
+    <div id="preview" class="preview hidden"></div>
+
+    <div class="row spread" style="margin-top:14px">
+      <div class="row">
+        <button id="imgBtn">Add photo</button>
+        <input id="imgFile" type="file" accept="image/*" class="hidden">
+      </div>
+      <div class="row">
+        <button id="deleteBtn" class="danger hidden">Delete post</button>
+        <button id="saveBtn" class="primary">Publish</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const OWNER = "kanegee1", REPO = "codeSweat", BRANCH = "main";
+const SITE = `https://${OWNER}.github.io/${REPO}`;
+const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+const $ = id => document.getElementById(id);
+const store = {
+  get: k => { try { return localStorage.getItem(k); } catch { return null; } },
+  set: (k, v) => { try { localStorage.setItem(k, v); } catch {} },
+  del: k => { try { localStorage.removeItem(k); } catch {} },
+};
+
+let token = store.get("cs-token");
+let editing = null; // { path, sha } when editing an existing post
+
+// ---- helpers ----
+const toB64 = s => { const b = new TextEncoder().encode(s); let bin = ""; for (const x of b) bin += String.fromCharCode(x); return btoa(bin); };
+const fromB64 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, "")), c => c.charCodeAt(0)));
+const slugify = s => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function say(text, kind = "ok", html = false) {
+  const m = $("msg");
+  m.className = "msg " + kind;
+  m[html ? "innerHTML" : "textContent"] = text;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+const clearMsg = () => $("msg").className = "msg hidden";
+
+async function gh(path, opts = {}) {
+  const res = await fetch(API + path, {
+    cache: "no-store",
+    ...opts,
+    headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", ...(opts.headers || {}) },
+  });
+  if (!res.ok) {
+    let detail = "";
+    try { detail = (await res.json()).message; } catch {}
+    const err = new Error(detail || res.statusText);
+    err.status = res.status;
+    throw err;
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+function show(view) {
+  for (const id of ["signin", "listView", "editor"]) $(id).classList.toggle("hidden", id !== view);
+  $("signout").classList.toggle("hidden", view === "signin");
+}
+
+// ---- front matter (matches build.mjs) ----
+function parsePost(raw) {
+  const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  const meta = {};
+  let body = raw;
+  if (m) {
+    body = m[2];
+    for (const line of m[1].split("\n")) {
+      const i = line.indexOf(":");
+      if (i < 0) continue;
+      const k = line.slice(0, i).trim();
+      let v = line.slice(i + 1).trim().replace(/^["']|["']$/g, "");
+      if (k === "tags") v = v.replace(/^\[|\]$/g, "").split(",").map(t => t.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+      meta[k] = v;
+    }
+  }
+  return { meta, body: body.replace(/^\n+/, "") };
+}
+
+function buildPost() {
+  const one = s => s.replace(/[\r\n]+/g, " ").trim();
+  const tags = $("fTags").value.split(",").map(t => slugify(t)).filter(Boolean);
+  const lines = [
+    "---",
+    `title: ${one($("fTitle").value)}`,
+    `date: ${$("fDate").value}`,
+    `tags: [${tags.join(", ")}]`,
+  ];
+  if (one($("fDesc").value)) lines.push(`description: ${one($("fDesc").value)}`);
+  if (one($("fCover").value)) lines.push(`cover: ${one($("fCover").value)}`);
+  if ($("fDraft").checked) lines.push("draft: true");
+  lines.push("---", "", $("fBody").value.replace(/\s+$/, ""), "");
+  return lines.join("\n");
+}
+
+const postSlug = path => slugify(path.split("/").pop().replace(/\.md$/, "").replace(/^\d{4}-\d{2}-\d{2}-/, ""));
+
+// ---- sign in ----
+async function signIn(t) {
+  token = t;
+  try {
+    const repo = await gh("");
+    if (!repo.permissions || !repo.permissions.push) throw Object.assign(new Error("This token can't write to codeSweat."), { status: 403 });
+    store.set("cs-token", t);
+    const me = await fetch("https://api.github.com/user", { headers: { Authorization: `Bearer ${t}` } }).then(r => r.ok ? r.json() : null).catch(() => null);
+    $("who").textContent = me ? `Signed in as ${me.login}` : "Signed in";
+    clearMsg();
+    await loadList();
+  } catch (e) {
+    token = null;
+    store.del("cs-token");
+    show("signin");
+    say(e.status === 401 ? "That token isn't valid. Check that you copied all of it and that it hasn't expired."
+      : e.status === 404 ? "That token can't see the codeSweat repo. Edit the token and give it access to codeSweat."
+      : `Sign-in failed: ${e.message}`, "bad");
+  }
+}
+
+$("signinBtn").onclick = () => { const t = $("token").value.trim(); if (t) signIn(t); };
+$("token").onkeydown = e => { if (e.key === "Enter") $("signinBtn").click(); };
+$("signout").onclick = () => { store.del("cs-token"); token = null; $("who").textContent = ""; $("token").value = ""; clearMsg(); show("signin"); };
+
+// ---- list ----
+async function loadList() {
+  show("listView");
+  const ul = $("postList");
+  ul.innerHTML = "<li>Loading…</li>";
+  let files = [];
+  try { files = (await gh(`/contents/posts?ref=${BRANCH}`)).filter(f => f.name.endsWith(".md")); }
+  catch (e) { if (e.status !== 404) { ul.innerHTML = ""; return say(`Couldn't load posts: ${e.message}`, "bad"); } }
+  files.sort((a, b) => b.name.localeCompare(a.name));
+  if (!files.length) { ul.innerHTML = "<li>No posts yet. Tap New post to write your first one.</li>"; return; }
+  ul.innerHTML = files.map(f => {
+    const date = (f.name.match(/^\d{4}-\d{2}-\d{2}/) || [""])[0];
+    const name = f.name.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, "").replace(/-/g, " ");
+    return `<li><div><div class="t">${esc(name)}</div><div class="d">${esc(date)}</div></div>
+      <div class="row"><a href="${SITE}/posts/${postSlug(f.path)}.html" target="_blank" rel="noopener">View</a>
+      <button data-path="${esc(f.path)}">Edit</button></div></li>`;
+  }).join("");
+  ul.querySelectorAll("button[data-path]").forEach(b => b.onclick = () => openPost(b.dataset.path));
+}
+
+// ---- editor ----
+function fillEditor(meta = {}, body = "") {
+  $("fTitle").value = meta.title || "";
+  $("fDate").value = meta.date || today();
+  $("fDesc").value = meta.description || "";
+  $("fTags").value = (meta.tags || []).join(", ");
+  $("fCover").value = meta.cover || "";
+  $("fDraft").checked = meta.draft === "true";
+  $("fBody").value = body;
+  setTab("write");
+}
+
+function newPost() {
+  editing = null;
+  $("editorTitle").textContent = "New post";
+  $("saveBtn").textContent = "Publish";
+  $("deleteBtn").classList.add("hidden");
+  const saved = store.get("cs-unsaved");
+  if (saved) { try { const d = JSON.parse(saved); fillEditor(d.meta, d.body); } catch { fillEditor(); } }
+  else fillEditor();
+  clearMsg();
+  show("editor");
+  $("fTitle").focus();
+}
+
+async function openPost(path) {
+  try {
+    const f = await gh(`/contents/${path}?ref=${BRANCH}`);
+    const { meta, body } = parsePost(fromB64(f.content));
+    editing = { path, sha: f.sha };
+    $("editorTitle").textContent = "Edit post";
+    $("saveBtn").textContent = "Save changes";
+    $("deleteBtn").classList.remove("hidden");
+    fillEditor(meta, body);
+    clearMsg();
+    show("editor");
+  } catch (e) { say(`Couldn't open that post: ${e.message}`, "bad"); }
+}
+
+$("newBtn").onclick = newPost;
+$("backBtn").onclick = () => { clearMsg(); loadList(); };
+
+// Keep unsaved new posts in this browser so nothing is lost
+["fTitle", "fDate", "fDesc", "fTags", "fCover", "fBody"].forEach(id => $(id).addEventListener("input", () => {
+  if (editing) return;
+  store.set("cs-unsaved", JSON.stringify({ meta: {
+    title: $("fTitle").value, date: $("fDate").value, description: $("fDesc").value,
+    tags: $("fTags").value.split(",").map(t => t.trim()).filter(Boolean), cover: $("fCover").value,
+  }, body: $("fBody").value }));
+}));
+
+function setTab(which) {
+  const write = which === "write";
+  $("tabWrite").setAttribute("aria-selected", write);
+  $("tabPreview").setAttribute("aria-selected", !write);
+  $("fBody").classList.toggle("hidden", !write);
+  $("preview").classList.toggle("hidden", write);
+  if (!write) {
+    const md = $("fBody").value.replace(/\]\(\.\.\/images\//g, `](${SITE}/images/`);
+    $("preview").innerHTML = (window.marked ? marked.parse(md) : `<pre>${esc(md)}</pre>`) || "<p style='color:var(--muted)'>Nothing to preview yet.</p>";
+  }
+}
+$("tabWrite").onclick = () => setTab("write");
+$("tabPreview").onclick = () => setTab("preview");
+
+// ---- publish ----
+$("saveBtn").onclick = async () => {
+  const title = $("fTitle").value.trim();
+  if (!title) return say("Add a title before publishing.", "bad");
+  if (!$("fDate").value) return say("Pick a date before publishing.", "bad");
+  if (!$("fBody").value.trim()) return say("Write something in the post before publishing.", "bad");
+
+  const path = editing ? editing.path : `posts/${$("fDate").value}-${slugify(title) || "post"}.md`;
+  const btn = $("saveBtn");
+  btn.disabled = true;
+  const label = btn.textContent;
+  btn.textContent = "Publishing…";
+  try {
+    if (!editing) {
+      try { await gh(`/contents/${path}?ref=${BRANCH}`); throw Object.assign(new Error("exists"), { exists: true }); }
+      catch (e) { if (e.exists) throw new Error("A post with this title and date already exists. Change the title or open that post to edit it."); if (e.status !== 404) throw e; }
+    }
+    const res = await gh(`/contents/${path}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        message: `${editing ? "Update" : "Add"} post: ${title}`,
+        content: toB64(buildPost()),
+        branch: BRANCH,
+        ...(editing ? { sha: editing.sha } : {}),
+      }),
+    });
+    editing = { path, sha: res.content.sha };
+    store.del("cs-unsaved");
+    $("editorTitle").textContent = "Edit post";
+    btn.textContent = label = "Save changes";
+    $("deleteBtn").classList.remove("hidden");
+    const url = `${SITE}/posts/${postSlug(path)}.html`;
+    say($("fDraft").checked
+      ? "Saved as a draft. It won't appear on the site until you uncheck draft and save again."
+      : `Published. Your site rebuilds in about a minute, then it's live at <a href="${url}" target="_blank" rel="noopener">${esc(url)}</a>.`, "ok", true);
+  } catch (e) {
+    say(e.status === 409 ? "This post changed somewhere else since you opened it. Go back to your posts and open it again."
+      : `Couldn't publish: ${e.message}`, "bad");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = label;
+  }
+};
+
+// ---- delete ----
+$("deleteBtn").onclick = async () => {
+  if (!editing || !confirm("Delete this post from your blog? You can't undo this here.")) return;
+  try {
+    await gh(`/contents/${editing.path}`, { method: "DELETE",
+      body: JSON.stringify({ message: `Delete post: ${$("fTitle").value.trim()}`, sha: editing.sha, branch: BRANCH }) });
+    editing = null;
+    await loadList();
+    say("Post deleted. It disappears from the site after the next rebuild, in about a minute.");
+  } catch (e) { say(`Couldn't delete: ${e.message}`, "bad"); }
+};
+
+// ---- photos ----
+$("imgBtn").onclick = () => $("imgFile").click();
+$("imgFile").onchange = async () => {
+  const file = $("imgFile").files[0];
+  $("imgFile").value = "";
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) return say("That photo is over 10 MB. Resize it and try again.", "bad");
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const name = `${Date.now()}-${slugify(file.name.replace(/\.[^.]+$/, "")) || "photo"}.${ext}`;
+  $("imgBtn").disabled = true;
+  $("imgBtn").textContent = "Uploading…";
+  try {
+    const b64 = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(",")[1]); r.onerror = rej; r.readAsDataURL(file); });
+    await gh(`/contents/static/images/${name}`, { method: "PUT",
+      body: JSON.stringify({ message: `Add image ${name}`, content: b64, branch: BRANCH }) });
+    const ta = $("fBody");
+    const snippet = `\n![Describe the photo](../images/${name})\n`;
+    const at = ta.selectionStart ?? ta.value.length;
+    ta.value = ta.value.slice(0, at) + snippet + ta.value.slice(at);
+    ta.dispatchEvent(new Event("input"));
+    setTab("write");
+    say("Photo uploaded and added to your post. It shows in Preview once the site has rebuilt.");
+  } catch (e) { say(`Couldn't upload the photo: ${e.message}`, "bad"); }
+  finally { $("imgBtn").disabled = false; $("imgBtn").textContent = "Add photo"; }
+};
+
+// ---- start ----
+if (token) signIn(token); else show("signin");
+</script>
+</body>
+</html>

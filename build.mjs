@@ -87,8 +87,12 @@ ${body}
 
 const tagChips = (tags, up) => tags.map(t => `<a class="tag" href="${up}tags/${slugify(t)}.html">#${esc(t)}</a>`).join("");
 
+// Cover can be a full link or a site image like images/photo.jpg
+const coverSrc = (p, up) => /^https?:\/\//.test(p.cover) ? p.cover : up + p.cover.replace(/^(\.\.\/|\/)+/, "");
+
 function card(p, up) {
-  return `<article class="card">
+  return `<article class="card${p.cover ? " has-cover" : ""}">
+  ${p.cover ? `<a class="card-cover" href="${up}posts/${p.slug}.html" tabindex="-1" aria-hidden="true"><img src="${esc(coverSrc(p, up))}" alt="" loading="lazy"></a>` : ""}
   <div class="byline"><span class="avatar">${esc(initials)}</span><div><div class="author">${esc(cfg.author)}</div><time datetime="${p.date}">${fmtDate(p.date)}</time></div></div>
   <h2><a href="${up}posts/${p.slug}.html">${esc(p.title)}</a></h2>
   <p class="excerpt">${esc(p.excerpt)}</p>
@@ -120,7 +124,7 @@ for (const p of posts) {
     description: p.excerpt,
     depth: 1,
     body: `<article class="post">
-  ${p.cover ? `<img class="cover" src="${esc(p.cover)}" alt="">` : ""}
+  ${p.cover ? `<img class="cover" src="${esc(coverSrc(p, "../"))}" alt="">` : ""}
   <div class="post-inner">
     <div class="byline"><span class="avatar">${esc(initials)}</span><div><div class="author">${esc(cfg.author)}</div><time datetime="${p.date}">Posted ${fmtDate(p.date)} · ${p.minutes} min read</time></div></div>
     <h1>${esc(p.title)}</h1>

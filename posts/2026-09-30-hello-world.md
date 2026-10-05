@@ -5,7 +5,7 @@ tags: [meta, blogging]
 description: Why I started this blog, what I'll write about, and how it's built.
 ---
 
-This is the first post on **The Workbench**. It's a small corner of the internet where I'll write about the things I spend my free time on.
+This is the first post on **Code Sweat**. It's a small corner of the internet where I'll write about the things I spend my free time on.
 
 ## What to expect
 
